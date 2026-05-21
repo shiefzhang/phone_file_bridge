@@ -1,0 +1,26 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "com.example.phonefilebridge"
+    compileSdk 33
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        applicationId "com.example.phonefilebridge"
+        minSdk 19
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "PhoneFileBridge-${variant.name}-${variant.versionName}.apk"
+        }
+    }
+}
