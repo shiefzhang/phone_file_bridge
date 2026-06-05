@@ -20,7 +20,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "PhoneFileBridge-${variant.name}-${variant.versionName}.apk"
+            outputFileName = "CloseSend-${variant.name}-${variant.versionName}.apk"
         }
     }
 }

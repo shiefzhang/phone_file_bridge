@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         scroll.addView(root);
 
         TextView title = new TextView(this);
-        title.setText("\u624b\u673a\u6587\u4ef6\u6865");
+        title.setText("\u6587\u4ef6\u8fd1\u4f20");
         title.setTextSize(28);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setTextColor(Color.parseColor("#102033"));
@@ -484,7 +484,7 @@ public class MainActivity extends Activity {
         private void sendLogin(OutputStream out, boolean failed) throws IOException {
             String html = page("Login",
                     "<main class=\"login\">"
-                            + "<h1>Phone File Bridge</h1>"
+                            + "<h1>CloseSend</h1>"
                             + (failed ? "<p class=\"error\">Password is incorrect.</p>" : "")
                             + "<form method=\"post\" action=\"/login\">"
                             + "<input type=\"password\" name=\"password\" placeholder=\"Password\" autofocus>"
@@ -513,7 +513,7 @@ public class MainActivity extends Activity {
             String rel = relativePath(dir);
             StringBuilder body = new StringBuilder();
             body.append("<nav class=\"breadcrumbs\">").append(breadcrumb(rel)).append("</nav>");
-            body.append("<header><h1>Phone File Bridge</h1><div class=\"rootPath\">")
+            body.append("<header><h1>CloseSend</h1><div class=\"rootPath\">")
                     .append(escape(rootDir.getAbsolutePath())).append("</div></header>");
             if (!message.isEmpty()) {
                 body.append("<p class=\"message\">").append(escape(message)).append("</p>");

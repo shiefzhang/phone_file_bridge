@@ -1,6 +1,6 @@
-# 手机文件桥
+# 文件近传
 
-手机文件桥是一个原生 Android 小工具。它会在手机上启动一个局域网 HTTP 文件服务，电脑和手机连接同一个 Wi-Fi 后，电脑可以用浏览器打开手机端显示的地址，浏览手机公共目录、下载文件、上传文件。
+文件近传（CloseSend）是一个手机端局域网文件服务小工具。Android 版本是原生 Android/Java；iOS 版本位于 `ios/`，使用 SwiftUI 和 Network.framework 实现。它会在手机上启动一个局域网 HTTP 文件服务，电脑和手机连接同一个 Wi-Fi 后，电脑可以用浏览器打开手机端显示的地址，浏览目录、下载文件、上传文件。
 
 ## 主要功能
 
@@ -12,6 +12,7 @@
 - 支持多选文件并批量下载为 zip
 - 支持从 PC 上传文件到手机当前目录
 - 上传、下载时显示进度条和操作结果
+- iOS 普通文件上传使用流式写入，支持超过 100 MB 的大文件
 - 顶部显示目录树，方便确认当前位置
 - 提供常用公共目录快捷入口：
   - Download
@@ -22,6 +23,9 @@
   - Music
 - 默认打开公共 `Download` 目录，便于其它应用读写和查看
 - 兼容较老 Android 版本，最低支持 Android 4.4
+- iOS 版本默认共享 App 的 Documents 目录，支持通过“文件”App/Finder 文件共享/浏览器上传导入文件
+- iOS 版本支持读取系统相册照片/视频，并支持把电脑上传的照片/视频保存到系统相册
+- iOS 版本可在 App 内播放上传到 Documents/Music 文件夹的 MP3/M4A/WAV/AAC/FLAC 等音频文件
 
 ## 使用方式
 
@@ -31,6 +35,19 @@
 4. 确保手机和电脑在同一个局域网。
 5. 在电脑浏览器打开手机端显示的链接。
 6. 登录后即可上传、下载或批量下载文件。
+
+### iOS 使用说明
+
+1. 用 Xcode 安装并打开 iOS App。
+2. 点 App 内的“允许访问相册”，选择允许访问全部照片，或至少选择需要下载的照片/视频。
+3. 确保 iPhone 和电脑在同一个局域网。
+4. 在电脑浏览器打开 App 显示的地址。
+5. 进入 `Photos Library` 下载 iPhone 相册里的照片和视频。
+6. 在 `Photos Library` 页面点 `Upload to Photos`，可把电脑上的照片/视频保存到 iPhone 系统相册。
+7. PDF、文档、普通文件请在 `Documents / PDF files` 或其它 Documents 子目录中上传和下载。
+8. MP3 等音频文件可上传到 `Music` 文件夹，回到 iOS App 的“已上传音乐”区域点“刷新”后播放。
+
+> iOS 不允许普通第三方 App 把任意本地 MP3 导入 Apple 自带“音乐”App 曲库。本 App 的音乐播放功能是在 CloseSend 内播放 `Documents/Music` 中的音频文件；如果需要进入系统“音乐”App 曲库，请通过 Finder/Music 同步或 Apple Music/iCloud 音乐资料库等系统支持的方式处理。
 
 ## 权限说明
 
@@ -53,6 +70,8 @@
 
 ## 构建
 
+### Android
+
 本项目是原生 Android/Java 工程。调试包构建命令：
 
 ```powershell
@@ -67,6 +86,44 @@ $env:Path="$env:JAVA_HOME\bin;$env:ANDROID_HOME\platform-tools;$env:Path"
 ```text
 app/build/outputs/apk/debug/app-debug.apk
 ```
+
+### iOS
+
+iOS 工程位于：
+
+```text
+ios/PhoneFileBridge.xcodeproj
+```
+
+可用 Xcode 打开后选择 `PhoneFileBridge` Scheme 构建运行。命令行模拟器 Debug 构建示例：
+
+最低系统版本为 iOS 15.0，可安装到 iPad mini 4 的 iOS 15.8.x。
+
+```bash
+xcodebuild -project ios/PhoneFileBridge.xcodeproj \
+  -scheme PhoneFileBridge \
+  -configuration Debug \
+  -sdk iphonesimulator \
+  -derivedDataPath ios/DerivedData \
+  CODE_SIGNING_ALLOWED=NO \
+  build
+```
+
+iOS 系统不允许普通 App 访问整台手机文件系统，因此 iOS 版本的文件区根目录是 App 沙盒内的 Documents 目录。`Info.plist` 已开启 `UIFileSharingEnabled` 和 `LSSupportsOpeningDocumentsInPlace`，便于从 Finder 或“文件”App 管理这些文件。系统相册的照片/视频通过 PhotoKit 单独授权访问。
+
+## 版本更新历史
+
+### 2026-06-05
+
+- 项目中文名更新为“文件近传”，App 名称更新为 `CloseSend`。
+- Android 启动器名称、网页标题、APK 输出文件名和 Gradle 根项目名同步更新为 `CloseSend`。
+- README 补充 iOS 版本使用说明、构建说明和 iOS 系统限制说明。
+- iOS 本地版本新增系统相册浏览/下载/上传能力，并支持把电脑上传的照片和视频保存到系统相册。
+- iOS 本地版本新增 Documents 沙盒文件区管理，支持 `Download`、`Documents`、`Photos`、`Camera`、`Movies`、`Music` 等快捷目录。
+- iOS 本地版本普通文件上传改为流式写入，支持超过 100 MB 的大文件。
+- iOS 本地版本新增 `Documents/Music` 音频列表和 App 内播放能力。
+- iOS 本地版本优化网页文件列表：顶部固定 `Photos Library` / `Documents` 入口，当前区域和当前文件夹高亮；相册与沙盒文件列表均分栏显示文件大小、时间等信息。
+- `.gitignore` 补充 Xcode DerivedData 和用户态工程状态文件忽略规则。
 
 ## 作者信息
 
