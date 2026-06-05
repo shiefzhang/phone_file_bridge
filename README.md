@@ -125,6 +125,21 @@ iOS 系统不允许普通 App 访问整台手机文件系统，因此 iOS 版本
 - iOS 本地版本优化网页文件列表：顶部固定 `Photos Library` / `Documents` 入口，当前区域和当前文件夹高亮；相册与沙盒文件列表均分栏显示文件大小、时间等信息。
 - `.gitignore` 补充 Xcode DerivedData 和用户态工程状态文件忽略规则。
 
+#### iOS 本地变更同步清单
+
+以下 iOS 本地代码不推送到 GitHub；记录在此用于后续同步 Android 版本能力：
+
+- 应用命名：iOS 主界面中文标题改为“文件近传”，导航标题、网页标题、Bundle 显示名和构建产物名改为 `CloseSend`。
+- 顶部导航：网页端固定显示 `Photos Library` 和 `Documents` 两个入口；当前区域差异化高亮；沙盒快捷目录中当前选中的 `Download`、`Documents`、`Photos`、`Camera`、`Movies`、`Music` 会高亮。
+- 沙盒文件列表：沙盒目录列表分栏显示 `文件名 / 大小 / 更新时间 / 操作`；文件夹大小列显示 `Folder`，普通文件显示格式化后的文件大小。
+- 相册文件列表：系统相册列表分栏显示 `文件名 / 大小 / 类型与时间 / 操作`；文件大小从 PhotoKit 资源信息读取，无法读取时显示 `Size unknown`。
+- 大文件上传：普通文件上传和上传到相册均改为流式写入，避免超过 100 MB 时因整包缓冲触发网络错误。
+- 相册能力：新增 `Photos Library` 页面，支持列出系统照片/视频、下载单个资源、选择多个资源顺序下载，以及把电脑上传的照片/视频保存到系统相册。
+- 沙盒能力：iOS 文件区根目录为 App Documents，启动时创建 `Download`、`Documents`、`Photos`、`Camera`、`Movies`、`Music` 快捷目录。
+- 音乐能力：上传到 `Documents/Music` 的 MP3/M4A/WAV/AAC/FLAC 等音频可在 App 内刷新列表并播放、暂停、停止；不导入 Apple“音乐”App 曲库。
+- 页面交互：上传、下载、打包下载、保存到相册均显示进度条和结果状态；相册多选下载按资源顺序逐个下载。
+- iOS 限制说明：README 明确记录 iOS 不能让普通 App 访问整台文件系统，也不能把任意本地 MP3 导入 Apple“音乐”App 曲库。
+
 ## 作者信息
 
 - 作者：Pyrrhus

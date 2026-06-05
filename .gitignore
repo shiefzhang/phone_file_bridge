@@ -10,6 +10,7 @@ local.properties
 # IDE files
 .idea/
 *.iml
+ios/
 DerivedData/
 ios/DerivedData/
 *.xcuserdata/
