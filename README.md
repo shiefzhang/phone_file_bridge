@@ -39,7 +39,7 @@
 ### iOS 使用说明
 
 1. 用 Xcode 安装并打开 iOS App。
-2. 点 App 内的“允许访问相册”，选择允许访问全部照片，或至少选择需要下载的照片/视频。
+2. 点 App 内相册说明下方的“继续”，选择允许访问全部照片，或至少选择需要下载的照片/视频。
 3. 确保 iPhone 和电脑在同一个局域网。
 4. 在电脑浏览器打开 App 显示的地址。
 5. 进入 `Photos Library` 下载 iPhone 相册里的照片和视频。
@@ -112,6 +112,14 @@ xcodebuild -project ios/PhoneFileBridge.xcodeproj \
 iOS 系统不允许普通 App 访问整台手机文件系统，因此 iOS 版本的文件区根目录是 App 沙盒内的 Documents 目录。`Info.plist` 已开启 `UIFileSharingEnabled` 和 `LSSupportsOpeningDocumentsInPlace`，便于从 Finder 或“文件”App 管理这些文件。系统相册的照片/视频通过 PhotoKit 单独授权访问。
 
 ## 版本更新历史
+
+### 2026-06-10
+
+- iOS 版本完成 App Store 审核流程，按审核反馈优化相册权限请求入口。
+- iOS 本地版本将相册权限请求前的按钮文案由“允许访问相册”调整为中性的“继续”，避免在系统权限弹窗前引导用户授权。
+- iOS 本地版本在相册权限已拒绝或受限时改为提供“打开系统设置”入口，不再重复触发授权请求。
+- iOS 本地版本同步更新浏览器端无相册权限提示，避免继续引用旧的授权按钮文案。
+- README 同步更新 iOS 使用说明；iOS 本地代码仍不推送到 GitHub。
 
 ### 2026-06-05
 
