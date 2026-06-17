@@ -41,9 +41,11 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -507,6 +509,10 @@ public class MainActivity extends Activity {
                 if (a.isDirectory() != b.isDirectory()) {
                     return a.isDirectory() ? -1 : 1;
                 }
+                int modifiedCompare = Long.compare(b.lastModified(), a.lastModified());
+                if (modifiedCompare != 0) {
+                    return modifiedCompare;
+                }
                 return a.getName().compareToIgnoreCase(b.getName());
             });
 
@@ -531,7 +537,7 @@ public class MainActivity extends Activity {
                     .append("<div id=\"transferResult\" class=\"transferResult\"></div>")
                     .append("</section>");
             body.append("<div class=\"path\">/").append(escape(rel)).append("</div>");
-            body.append("<table><tbody>");
+            body.append("<table><thead><tr><th class=\"name\">Name</th><th>Size</th><th class=\"modified\">Modified</th><th>Action</th></tr></thead><tbody>");
             appendParentRow(body, rel);
             for (File file : files) {
                 String childRel = relativePath(file);
@@ -544,7 +550,8 @@ public class MainActivity extends Activity {
                             .append(escape(childRel)).append("\"><span>")
                             .append(escape(file.getName())).append("</span></label>");
                 }
-                body.append("</td><td>").append(file.isDirectory() ? "Folder" : readableSize(file.length())).append("</td><td>");
+                body.append("</td><td>").append(file.isDirectory() ? "Folder" : readableSize(file.length()))
+                        .append("</td><td class=\"modified\">").append(escape(modifiedDate(file.lastModified()))).append("</td><td>");
                 if (file.isFile()) {
                     body.append("<a href=\"/download?path=").append(enc(childRel)).append("\">Download</a>");
                 }
@@ -585,7 +592,7 @@ public class MainActivity extends Activity {
             } else {
                 body.append("<span class=\"parentDisabled\">.. Up one level</span>");
             }
-            body.append("</td><td>").append(canOpen ? "Parent" : "Unavailable").append("</td><td></td></tr>");
+            body.append("</td><td>").append(canOpen ? "Parent" : "Unavailable").append("</td><td></td><td></td></tr>");
         }
 
         private String directoryShortcuts() throws IOException {
@@ -827,7 +834,7 @@ public class MainActivity extends Activity {
                     + ".fileRow{display:flex;align-items:center;gap:12px}.fileCheck{width:18px;height:18px;accent-color:#1459b8}.checkSpace{display:inline-block;width:30px}"
                     + ".parentRow{background:#f7fbfd}.parentLink{display:inline-block}.parentDisabled{color:#94a3b8;font-weight:650}"
                     + "table{width:calc(100% - 44px);margin:0 22px 24px;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid #d6e2ed;border-radius:8px;overflow:hidden}"
-                    + "td{border-top:1px solid #e4edf4;padding:13px 16px}tr:first-child td{border-top:0}tr:hover{background:#f7fbfd}td.name{width:70%;word-break:break-word}"
+                    + "th{padding:11px 16px;text-align:left;background:#f7fbfd;color:#4a5c70;font-size:13px;border-bottom:1px solid #d6e2ed}td{border-top:1px solid #e4edf4;padding:13px 16px}tbody tr:first-child td{border-top:0}tr:hover{background:#f7fbfd}td.name,th.name{width:58%;word-break:break-word}.modified{white-space:nowrap;color:#4a5c70}"
                     + "a{color:#1459b8;font-weight:650}.login{max-width:380px;margin:12vh auto;padding:26px;background:#fff;border:1px solid #d6e2ed;border-radius:8px;box-shadow:0 18px 55px rgba(16,32,51,.12)}"
                     + ".login input{box-sizing:border-box;width:100%;padding:12px;margin:12px 0;border:1px solid #c7d5e2;border-radius:7px}.login button{width:100%;font-size:16px}.error,.message{margin:14px 22px;color:#b91c1c}"
                     + "@media(max-width:640px){header{padding:18px}.breadcrumbs,.shortcuts{padding:10px 16px}.toolbar{top:40px;padding:12px 16px}.path,.transferPanel,table{margin-left:16px;margin-right:16px;width:calc(100% - 32px)}td{display:block;border-top:0;padding:6px 14px}tr{display:block;border-top:1px solid #e4edf4;padding:8px 0}}"
@@ -880,6 +887,10 @@ public class MainActivity extends Activity {
                 unit++;
             }
             return String.format(Locale.US, unit == 0 ? "%.0f %s" : "%.1f %s", value, units[unit]);
+        }
+
+        private String modifiedDate(long timestamp) {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date(timestamp));
         }
 
         private String enc(String value) throws IOException {

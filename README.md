@@ -26,6 +26,7 @@
 - iOS 版本默认共享 App 的 Documents 目录，支持通过“文件”App/Finder 文件共享/浏览器上传导入文件
 - iOS 版本支持读取系统相册照片/视频，并支持把电脑上传的照片/视频保存到系统相册
 - iOS 版本可在 App 内播放上传到 Documents/Music 文件夹的 MP3/M4A/WAV/AAC/FLAC 等音频文件
+- Android 网页文件列表显示修改日期，并按文件夹优先、修改日期倒序排列
 
 ## 使用方式
 
@@ -112,6 +113,11 @@ xcodebuild -project ios/PhoneFileBridge.xcodeproj \
 iOS 系统不允许普通 App 访问整台手机文件系统，因此 iOS 版本的文件区根目录是 App 沙盒内的 Documents 目录。`Info.plist` 已开启 `UIFileSharingEnabled` 和 `LSSupportsOpeningDocumentsInPlace`，便于从 Finder 或“文件”App 管理这些文件。系统相册的照片/视频通过 PhotoKit 单独授权访问。
 
 ## 版本更新历史
+
+### 2026-06-17
+
+- Android 网页文件列表新增 `Modified` 修改日期列。
+- Android 网页文件列表排序调整为文件夹优先，同类型内按修改日期倒序排列，修改时间相同时按文件名排序。
 
 ### 2026-06-10
 
